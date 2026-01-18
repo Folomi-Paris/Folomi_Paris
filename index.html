@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#140707">
+  <meta name="color-scheme" content="dark">
+  <title>Menu</title>
+
+  <style>
+    /* ===============================
+       RESET & BASE
+       =============================== */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      background-color: #0f0505;
+      color: #e8d6b3;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    body { overscroll-behavior: none; }
+
+    /* ===============================
+       FOND LUXE TEXTURÉ
+       =============================== */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -3;
+      background:
+        radial-gradient(1050px 650px at 50% -10%, rgba(255,215,140,0.12), transparent 62%),
+        radial-gradient(800px 520px at 15% 40%, rgba(120,20,20,0.48), transparent 62%),
+        radial-gradient(820px 520px at 85% 40%, rgba(50,10,10,0.62), transparent 62%),
+        linear-gradient(180deg, #140707, #0a0303);
+    }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background-image: repeating-linear-gradient(
+        0deg,
+        rgba(255,215,140,0.04),
+        rgba(255,215,140,0.04) 1px,
+        transparent 2px,
+        transparent 7px
+      );
+      opacity: 0.22;
+      pointer-events: none;
+    }
+
+    /* ===============================
+       RIDEAU DORÉ LUXE (INTRO)
+       =============================== */
+    .curtain {
+      position: fixed;
+      inset: 0;
+      z-index: 999;
+      pointer-events: none;
+      background:
+        radial-gradient(1100px 700px at 50% 15%, rgba(255,215,140,0.22), transparent 62%),
+        linear-gradient(180deg, rgba(10,3,3,0.96), rgba(10,3,3,0.88));
+      animation: curtainOut 1.2s cubic-bezier(.2,.9,.2,1) forwards;
+      animation-delay: .1s;
+    }
+
+    @keyframes curtainOut {
+      0% { opacity: 1; }
+      100% { opacity: 0; visibility: hidden; }
+    }
+
+    /* ===============================
+       ANIMATIONS CONTENU
+       =============================== */
+    @keyframes logoReveal {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes cardReveal {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ===============================
+       HEADER / LOGO
+       =============================== */
+    header {
+      text-align: center;
+      padding: calc(24px + env(safe-area-inset-top)) 16px 24px;
+      background: linear-gradient(180deg, rgba(10,3,3,0.95), rgba(10,3,3,0.7));
+      border-bottom: 1px solid rgba(255,215,140,0.18);
+    }
+
+    header img {
+      width: min(80vw, 420px);
+      height: auto;
+      display: block;
+      margin: 0 auto;
+      animation: logoReveal .7s ease-out both;
+      animation-delay: .4s;
+      filter: drop-shadow(0 10px 25px rgba(0,0,0,0.6));
+    }
+
+    /* ===============================
+       CARTES MENU
+       =============================== */
+    main {
+      width: 100%;
+      padding-bottom: calc(24px + env(safe-area-inset-bottom));
+    }
+
+    section {
+      opacity: 0;
+      animation: cardReveal .7s ease-out both;
+      border-top: 1px solid rgba(255,215,140,0.14);
+    }
+
+    section:nth-of-type(1) { animation-delay: .6s; }
+    section:nth-of-type(2) { animation-delay: .8s; }
+    section:nth-of-type(3) { animation-delay: 1s; }
+    section:nth-of-type(4) { animation-delay: 1.2s; }
+    section:nth-of-type(5) { animation-delay: 1.4s; }
+
+    section img {
+      width: 100%;
+      height: auto;
+      display: block;
+      box-shadow: 0 16px 36px rgba(0,0,0,0.5);
+    }
+
+    /* ===============================
+       DESKTOP (OPTIONNEL)
+       =============================== */
+    @media (min-width: 768px) {
+      main {
+        max-width: 900px;
+        margin: auto;
+        padding: 32px 16px 48px;
+      }
+
+      section {
+        margin-bottom: 24px;
+        border-radius: 14px;
+        overflow: hidden;
+      }
+    }
+
+    /* ===============================
+       ACCESSIBILITÉ
+       =============================== */
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; }
+      section { opacity: 1; }
+      .curtain { display: none; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Rideau luxe -->
+  <div class="curtain"></div>
+
+  <!-- LOGO -->
+  <header>
+    <img src="logo.png" alt="Logo">
+  </header>
+
+  <!-- CARTES -->
+  <main>
+    <section>
+      <img src="carte_chicha.png" alt="Carte Chicha" loading="lazy">
+    </section>
+
+    <section>
+      <img src="carte_plats.png" alt="Carte Plats" loading="lazy">
+    </section>
+
+    <section>
+      <img src="carte_formules.png" alt="Carte Formules" loading="lazy">
+    </section>
+
+    <section>
+      <img src="carte_desserts.png" alt="Carte Desserts" loading="lazy">
+    </section>
+
+    <section>
+      <img src="carte_cocktails.png" alt="Carte Cocktails" loading="lazy">
+    </section>
+  </main>
+
+  <!-- Sécurité : retire le rideau même en cas de chargement lent -->
+  <script>
+    window.addEventListener("load", () => {
+      const curtain = document.querySelector(".curtain");
+      if (curtain) setTimeout(() => curtain.remove(), 600);
+    });
+  </script>
+
+</body>
+</html>
