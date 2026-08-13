@@ -62,32 +62,20 @@
     }
 
     /* ===============================
-       RIDEAU DORÉ LUXE (INTRO)
-       =============================== */
-    .curtain {
-      position: fixed;
-      inset: 0;
-      z-index: 999;
-      pointer-events: none;
-      background:
-        radial-gradient(1100px 700px at 50% 15%, rgba(255,215,140,0.22), transparent 62%),
-        linear-gradient(180deg, rgba(10,3,3,0.96), rgba(10,3,3,0.88));
-      animation: curtainOut 1.2s cubic-bezier(.2,.9,.2,1) forwards;
-      animation-delay: .1s;
-    }
-
-    @keyframes curtainOut {
-      0% { opacity: 1; }
-      100% { opacity: 0; visibility: hidden; }
-    }
-
-    /* ===============================
        ANIMATIONS
        =============================== */
     /* Ouverture de la couverture, au chargement */
     @keyframes coverReveal {
-      from { opacity: 0; transform: scale(1.04); }
-      to { opacity: 1; transform: scale(1); }
+      from {
+        opacity: 0;
+        transform: scale(0.85) translateY(22px);
+        filter: blur(16px) drop-shadow(0 10px 25px rgba(0,0,0,0.6));
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        filter: blur(0) drop-shadow(0 10px 25px rgba(0,0,0,0.6));
+      }
     }
 
     /* Liseré doré qui balaie le haut de la carte */
@@ -115,8 +103,8 @@
       aspect-ratio: 1655 / 2340;
       display: block;
       margin: 0 auto;
-      animation: coverReveal 1.1s cubic-bezier(.2,.8,.2,1) both;
-      animation-delay: .35s;
+      animation: coverReveal 1.8s cubic-bezier(.7,0,.84,0) both;
+      animation-delay: .2s;
       filter: drop-shadow(0 10px 25px rgba(0,0,0,0.6));
     }
 
@@ -129,23 +117,11 @@
       padding: 0 0 env(safe-area-inset-bottom);
     }
 
-    /* Révélation au scroll : classe .is-visible posée par IntersectionObserver */
+    /* Liseré doré au scroll : classe .is-visible posée par IntersectionObserver */
     section {
       position: relative;
       overflow: hidden;
       border-top: 1px solid rgba(255,215,140,0.14);
-      opacity: 0;
-      transform: translateY(28px);
-      transition:
-        opacity .9s cubic-bezier(.2,.8,.2,1),
-        transform .9s cubic-bezier(.2,.8,.2,1);
-      will-change: opacity, transform;
-    }
-
-    section.is-visible {
-      opacity: 1;
-      transform: translateY(0);
-      will-change: auto;
     }
 
     section::before {
@@ -191,31 +167,12 @@
 
       header img { opacity: 1; transform: none; }
 
-      section {
-        opacity: 1;
-        transform: none;
-        will-change: auto !important;
-      }
-
       section::before { opacity: 0; }
-
-      .curtain { display: none; }
     }
   </style>
-
-  <!-- Sans JavaScript, les cartes restent visibles -->
-  <noscript>
-    <style>
-      section { opacity: 1 !important; transform: none !important; }
-      .curtain { display: none; }
-    </style>
-  </noscript>
 </head>
 
 <body>
-
-  <!-- Rideau luxe -->
-  <div class="curtain"></div>
 
   <!-- COUVERTURE -->
   <header>
@@ -278,13 +235,7 @@
   </main>
 
   <script>
-    // Sécurité : retire le rideau même en cas de chargement lent
-    window.addEventListener("load", () => {
-      const curtain = document.querySelector(".curtain");
-      if (curtain) setTimeout(() => curtain.remove(), 600);
-    });
-
-    // Révélation des cartes à l'entrée dans le viewport
+    // Déclenche le liseré doré (goldSweep) au passage de chaque carte dans le viewport
     (() => {
       const sections = document.querySelectorAll("main section");
       const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
