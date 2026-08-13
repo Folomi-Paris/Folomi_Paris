@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#140707">
   <meta name="color-scheme" content="dark">
-  <title>Menu</title>
+  <title>Menu · Folomi Paris</title>
 
   <style>
     /* ===============================
@@ -17,12 +17,16 @@
       margin: 0;
       padding: 0;
       width: 100%;
+      max-width: 100%;
       background-color: #0f0505;
       color: #e8d6b3;
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
     }
+
+    /* Uniquement sur html : posé aussi sur body, overflow-y passerait à auto
+       sur les deux et le body créerait une seconde barre de défilement. */
+    html { overflow-x: hidden; }
 
     body { overscroll-behavior: none; }
 
@@ -78,35 +82,41 @@
     }
 
     /* ===============================
-       ANIMATIONS CONTENU
+       ANIMATIONS
        =============================== */
-    @keyframes logoReveal {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
+    /* Ouverture de la couverture, au chargement */
+    @keyframes coverReveal {
+      from { opacity: 0; transform: scale(1.04); }
+      to { opacity: 1; transform: scale(1); }
     }
 
-    @keyframes cardReveal {
-      from { opacity: 0; transform: translateY(18px); }
-      to { opacity: 1; transform: translateY(0); }
+    /* Liseré doré qui balaie le haut de la carte */
+    @keyframes goldSweep {
+      from { transform: scaleX(0); opacity: 0; }
+      35% { opacity: 1; }
+      to { transform: scaleX(1); opacity: 0; }
     }
 
     /* ===============================
-       HEADER / LOGO
+       COUVERTURE (EN-TÊTE)
        =============================== */
     header {
-      text-align: center;
-      padding: calc(24px + env(safe-area-inset-top)) 16px 24px;
+      width: 100%;
+      overflow: hidden;
       background: linear-gradient(180deg, rgba(10,3,3,0.95), rgba(10,3,3,0.7));
       border-bottom: 1px solid rgba(255,215,140,0.18);
+      padding: 0;
+      line-height: 0;
     }
 
     header img {
-      width: min(80vw, 420px);
+      width: 100%;
       height: auto;
+      aspect-ratio: 1655 / 2340;
       display: block;
       margin: 0 auto;
-      animation: logoReveal .7s ease-out both;
-      animation-delay: .4s;
+      animation: coverReveal 1.1s cubic-bezier(.2,.8,.2,1) both;
+      animation-delay: .35s;
       filter: drop-shadow(0 10px 25px rgba(0,0,0,0.6));
     }
 
@@ -115,54 +125,91 @@
        =============================== */
     main {
       width: 100%;
-      padding-bottom: calc(24px + env(safe-area-inset-bottom));
+      max-width: 100%;
+      padding: 0 0 env(safe-area-inset-bottom);
     }
 
+    /* Révélation au scroll : classe .is-visible posée par IntersectionObserver */
     section {
-      opacity: 0;
-      animation: cardReveal .7s ease-out both;
+      position: relative;
+      overflow: hidden;
       border-top: 1px solid rgba(255,215,140,0.14);
+      opacity: 0;
+      transform: translateY(28px);
+      transition:
+        opacity .9s cubic-bezier(.2,.8,.2,1),
+        transform .9s cubic-bezier(.2,.8,.2,1);
+      will-change: opacity, transform;
     }
 
-    section:nth-of-type(1) { animation-delay: .6s; }
-    section:nth-of-type(2) { animation-delay: .8s; }
-    section:nth-of-type(3) { animation-delay: 1s; }
-    section:nth-of-type(4) { animation-delay: 1.2s; }
-    section:nth-of-type(5) { animation-delay: 1.4s; }
+    section.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+      will-change: auto;
+    }
+
+    section::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      z-index: 2;
+      transform-origin: left center;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,215,140,0.85),
+        rgba(255,240,200,0.95),
+        rgba(255,215,140,0.85),
+        transparent
+      );
+      transform: scaleX(0);
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    section.is-visible::before {
+      animation: goldSweep .9s ease-out both;
+    }
 
     section img {
       width: 100%;
       height: auto;
+      aspect-ratio: 1655 / 2340;
       display: block;
+      margin-inline: auto;
       box-shadow: 0 16px 36px rgba(0,0,0,0.5);
-    }
-
-    /* ===============================
-       DESKTOP (OPTIONNEL)
-       =============================== */
-    @media (min-width: 768px) {
-      main {
-        max-width: 900px;
-        margin: auto;
-        padding: 32px 16px 48px;
-      }
-
-      section {
-        margin-bottom: 24px;
-        border-radius: 14px;
-        overflow: hidden;
-      }
     }
 
     /* ===============================
        ACCESSIBILITÉ
        =============================== */
     @media (prefers-reduced-motion: reduce) {
-      * { animation: none !important; }
-      section { opacity: 1; }
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+
+      header img { opacity: 1; transform: none; }
+
+      section {
+        opacity: 1;
+        transform: none;
+        will-change: auto !important;
+      }
+
+      section::before { opacity: 0; }
+
       .curtain { display: none; }
     }
   </style>
+
+  <!-- Sans JavaScript, les cartes restent visibles -->
+  <noscript>
+    <style>
+      section { opacity: 1 !important; transform: none !important; }
+      .curtain { display: none; }
+    </style>
+  </noscript>
 </head>
 
 <body>
@@ -170,40 +217,96 @@
   <!-- Rideau luxe -->
   <div class="curtain"></div>
 
-  <!-- LOGO -->
+  <!-- COUVERTURE -->
   <header>
-    <img src="logo.png" alt="Logo">
+    <img src="couverture.webp"
+         srcset="couverture.webp 1655w, couverture@2x.webp 2482w"
+         sizes="100vw"
+         alt="Folomi Paris, menu" width="1655" height="2340" fetchpriority="high">
   </header>
 
   <!-- CARTES -->
   <main>
     <section>
-      <img src="carte_chicha.png" alt="Carte Chicha" loading="lazy">
+      <img src="carte_formules.webp"
+           srcset="carte_formules.webp 1655w, carte_formules@2x.webp 2482w"
+           sizes="100vw"
+           alt="Carte Formules" width="1655" height="2340">
     </section>
 
     <section>
-      <img src="carte_plats.png" alt="Carte Plats" loading="lazy">
+      <img src="carte_chicha.webp"
+           srcset="carte_chicha.webp 1655w, carte_chicha@2x.webp 2482w"
+           sizes="100vw"
+           alt="Carte Chicha" width="1655" height="2340" loading="lazy">
     </section>
 
     <section>
-      <img src="carte_formules.png" alt="Carte Formules" loading="lazy">
+      <img src="carte_entrees.webp"
+           srcset="carte_entrees.webp 1655w, carte_entrees@2x.webp 2482w"
+           sizes="100vw"
+           alt="Carte Entrées" width="1655" height="2340" loading="lazy">
     </section>
 
     <section>
-      <img src="carte_desserts.png" alt="Carte Desserts" loading="lazy">
+      <img src="carte_plats.webp"
+           srcset="carte_plats.webp 1655w, carte_plats@2x.webp 2482w"
+           sizes="100vw"
+           alt="Carte Plats" width="1655" height="2340" loading="lazy">
     </section>
 
     <section>
-      <img src="carte_cocktails.png" alt="Carte Cocktails" loading="lazy">
+      <img src="carte_boissons.webp"
+           srcset="carte_boissons.webp 1655w, carte_boissons@2x.webp 2482w"
+           sizes="100vw"
+           alt="Carte Pâtes et Boissons" width="1655" height="2340" loading="lazy">
+    </section>
+
+    <section>
+      <img src="carte_desserts.webp"
+           srcset="carte_desserts.webp 1655w, carte_desserts@2x.webp 2482w"
+           sizes="100vw"
+           alt="Carte Desserts" width="1655" height="2340" loading="lazy">
+    </section>
+
+    <section>
+      <img src="carte_cocktails.webp"
+           srcset="carte_cocktails.webp 1655w, carte_cocktails@2x.webp 2482w"
+           sizes="100vw"
+           alt="Carte Cocktails sans alcool" width="1655" height="2340" loading="lazy">
     </section>
   </main>
 
-  <!-- Sécurité : retire le rideau même en cas de chargement lent -->
   <script>
+    // Sécurité : retire le rideau même en cas de chargement lent
     window.addEventListener("load", () => {
       const curtain = document.querySelector(".curtain");
       if (curtain) setTimeout(() => curtain.remove(), 600);
     });
+
+    // Révélation des cartes à l'entrée dans le viewport
+    (() => {
+      const sections = document.querySelectorAll("main section");
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      if (reducedMotion || !("IntersectionObserver" in window)) {
+        sections.forEach((section) => section.classList.add("is-visible"));
+        return;
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          });
+        },
+        { threshold: 0.12, rootMargin: "0px 0px -6% 0px" }
+      );
+
+      sections.forEach((section) => observer.observe(section));
+    })();
   </script>
 
 </body>
