@@ -85,6 +85,18 @@
       to { transform: scaleX(1); opacity: 0; }
     }
 
+    /* Apparition d'une carte menu, au passage dans le viewport */
+    @keyframes sectionReveal {
+      from {
+        opacity: 0;
+        transform: scale(0.97) translateY(14px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
     /* ===============================
        COUVERTURE (EN-TÊTE)
        =============================== */
@@ -103,8 +115,8 @@
       aspect-ratio: 1655 / 2340;
       display: block;
       margin: 0 auto;
-      animation: coverReveal 1.8s cubic-bezier(.7,0,.84,0) both;
-      animation-delay: .2s;
+      animation: coverReveal 0.9s cubic-bezier(.7,0,.84,0) both;
+      animation-delay: .1s;
       filter: drop-shadow(0 10px 25px rgba(0,0,0,0.6));
     }
 
@@ -157,6 +169,11 @@
       display: block;
       margin-inline: auto;
       box-shadow: 0 16px 36px rgba(0,0,0,0.5);
+      opacity: 0;
+    }
+
+    section.is-visible img {
+      animation: sectionReveal .7s ease-out both;
     }
 
     /* ===============================
@@ -168,6 +185,8 @@
       header img { opacity: 1; transform: none; }
 
       section::before { opacity: 0; }
+
+      section img { opacity: 1; }
     }
   </style>
 </head>
