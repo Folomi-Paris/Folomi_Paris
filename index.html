@@ -169,8 +169,10 @@
       margin-inline: auto;
       box-shadow: 0 16px 36px rgba(0,0,0,0.5);
       opacity: 0;
+    }
+
+    section.is-visible img {
       animation: sectionReveal .6s ease-out both;
-      animation-delay: 1s;
     }
 
     /* ===============================
@@ -265,6 +267,8 @@
         (entries) => {
           entries.forEach((entry) => {
             if (!entry.isIntersecting) return;
+            const img = entry.target.querySelector("img");
+            if (img) img.style.animationDelay = `${Math.max(0, 1000 - performance.now())}ms`;
             entry.target.classList.add("is-visible");
             observer.unobserve(entry.target);
           });
